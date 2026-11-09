@@ -1,0 +1,1440 @@
+<!doctype html>
+<html lang="lo">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <style>
+    body {
+      margin: 0
+    }
+
+    [hidden] {
+      display: none !important
+    }
+
+    img {
+      max-width: 100%
+    }
+  </style>
+  <title>Arduino Sensor Exam</title>
+  <meta name="claude:viewport-fit-sides" content="cover">
+  <meta name="theme-color" content="#14304d">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600;700&display=swap">
+  <style>
+    /* Layout: a certification test-engine window — title bar with timer, one question pane, fixed toolbar at the bottom */
+    :root {
+      --bg: #e9edf1;
+      --panel: #ffffff;
+      --chrome: #14304d;
+      --chrome-fg: #e8f0f8;
+      --fg: #1b2633;
+      --muted: #5b6878;
+      --line: #c9d2dc;
+      --accent: #1f6fd1;
+      --accent-soft: #e3eefb;
+      --ok: #1e8a4c;
+      --ok-soft: #e2f4e9;
+      --bad: #c23b2e;
+      --bad-soft: #fbe7e4;
+      --flag: #c98a00;
+      --flag-soft: #fdf2d6;
+      --code-bg: #f3f5f8;
+      --f-body: "Noto Sans Lao", "IBM Plex Sans", system-ui, sans-serif;
+      --f-ui: "IBM Plex Sans", "Noto Sans Lao", system-ui, sans-serif;
+      --f-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+    }
+
+    @media (prefers-color-scheme:dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0f151c;
+        --panel: #18212b;
+        --chrome: #0a1724;
+        --chrome-fg: #d6e4f2;
+        --fg: #e3eaf2;
+        --muted: #93a1b2;
+        --line: #2c3846;
+        --accent: #5aa2ff;
+        --accent-soft: #1b2c42;
+        --ok: #4cc27e;
+        --ok-soft: #173326;
+        --bad: #ff7a6b;
+        --bad-soft: #3a1d1a;
+        --flag: #f0b43a;
+        --flag-soft: #3a2e12;
+        --code-bg: #111921;
+        color-scheme: dark
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #0f151c;
+      --panel: #18212b;
+      --chrome: #0a1724;
+      --chrome-fg: #d6e4f2;
+      --fg: #e3eaf2;
+      --muted: #93a1b2;
+      --line: #2c3846;
+      --accent: #5aa2ff;
+      --accent-soft: #1b2c42;
+      --ok: #4cc27e;
+      --ok-soft: #173326;
+      --bad: #ff7a6b;
+      --bad-soft: #3a1d1a;
+      --flag: #f0b43a;
+      --flag-soft: #3a2e12;
+      --code-bg: #111921;
+      color-scheme: dark
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html {
+      height: 100%;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%
+    }
+
+    body {
+      min-height: 100%;
+      min-height: 100dvh;
+      -webkit-tap-highlight-color: transparent;
+      overflow-wrap: break-word
+    }
+
+    button,
+    label,
+    .choice,
+    .cell {
+      touch-action: manipulation
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--f-body);
+      font-size: 16px;
+      line-height: 1.65;
+      display: flex;
+      flex-direction: column
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0 0 auto;
+      height: env(safe-area-inset-top, 0px);
+      z-index: 10;
+      background: var(--chrome)
+    }
+
+    .gut {
+      padding-left: max(16px, env(safe-area-inset-left, 0px));
+      padding-right: max(16px, env(safe-area-inset-right, 0px))
+    }
+
+    .wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      width: 100%
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer
+    }
+
+    button:focus-visible,
+    label:focus-within {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px
+    }
+
+    /* title bar */
+    .bar {
+      position: sticky;
+      top: env(safe-area-inset-top, 0px);
+      z-index: 5;
+      background: var(--chrome);
+      color: var(--chrome-fg);
+      font-family: var(--f-ui)
+    }
+
+    .bar .wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 52px;
+      flex-wrap: wrap;
+      padding-block: 6px
+    }
+
+    .bar .name {
+      font-weight: 700;
+      letter-spacing: .02em;
+      font-size: 15px;
+      flex: 1;
+      min-width: 0
+    }
+
+    .bar .name small {
+      display: block;
+      font-weight: 400;
+      opacity: .7;
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase
+    }
+
+    .chip {
+      font-family: var(--f-mono);
+      font-size: 14px;
+      padding: 4px 10px;
+      border: 1px solid rgba(255, 255, 255, .25);
+      border-radius: 4px;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap
+    }
+
+    .chip.warn {
+      background: var(--bad);
+      border-color: var(--bad);
+      color: #fff
+    }
+
+    .progress {
+      height: 4px;
+      background: rgba(255, 255, 255, .12)
+    }
+
+    .progress i {
+      display: block;
+      height: 100%;
+      background: var(--accent);
+      transition: width .25s
+    }
+
+    main {
+      flex: 1;
+      padding-block: 24px 120px
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 24px
+    }
+
+    h1,
+    h2,
+    h3 {
+      text-wrap: balance;
+      line-height: 1.35;
+      margin: 0
+    }
+
+    h1 {
+      font-size: clamp(24px, 4vw, 32px)
+    }
+
+    .eyebrow {
+      font-family: var(--f-ui);
+      font-size: 12px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600
+    }
+
+    /* start screen */
+    .start {
+      display: grid;
+      gap: 20px
+    }
+
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      overflow: hidden
+    }
+
+    .facts div {
+      background: var(--panel);
+      padding: 14px 16px
+    }
+
+    .facts b {
+      display: block;
+      font-family: var(--f-mono);
+      font-size: 22px;
+      font-variant-numeric: tabular-nums
+    }
+
+    .facts span {
+      font-size: 13px;
+      color: var(--muted)
+    }
+
+    .modes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .mode {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 14px;
+      cursor: pointer;
+      background: var(--panel)
+    }
+
+    .mode:has(input:checked) {
+      border-color: var(--accent);
+      background: var(--accent-soft)
+    }
+
+    .mode input {
+      margin-top: 6px;
+      accent-color: var(--accent)
+    }
+
+    .mode b {
+      display: block
+    }
+
+    .mode span {
+      font-size: 14px;
+      color: var(--muted)
+    }
+
+    .opts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 24px;
+      font-size: 15px
+    }
+
+    .opts label {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      cursor: pointer
+    }
+
+    .opts input {
+      accent-color: var(--accent);
+      width: 18px;
+      height: 18px
+    }
+
+    .rules {
+      font-size: 14px;
+      color: var(--muted);
+      margin: 0;
+      padding-left: 20px
+    }
+
+    .resume {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 12px 14px;
+      border: 1px dashed var(--accent);
+      border-radius: 6px;
+      background: var(--accent-soft);
+      font-size: 15px
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--fg);
+      padding: 9px 16px;
+      border-radius: 4px;
+      font-family: var(--f-body);
+      font-size: 15px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap
+    }
+
+    @media (hover:hover) {
+      .btn:hover {
+        border-color: var(--accent)
+      }
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 700
+    }
+
+    @media (hover:hover) {
+      .btn.primary:hover {
+        filter: brightness(1.08)
+      }
+    }
+
+    .btn.flagged {
+      background: var(--flag-soft);
+      border-color: var(--flag);
+      color: var(--fg)
+    }
+
+    .btn.danger {
+      border-color: var(--bad);
+      color: var(--bad)
+    }
+
+    .btn:disabled {
+      opacity: .4;
+      cursor: default
+    }
+
+    .btn kbd {
+      font-family: var(--f-mono);
+      font-size: 11px;
+      opacity: .6;
+      border: 1px solid currentColor;
+      border-radius: 3px;
+      padding: 0 4px
+    }
+
+    /* question */
+    .qhead {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px
+    }
+
+    .tag {
+      font-family: var(--f-ui);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      padding: 3px 8px;
+      border-radius: 3px;
+      background: var(--accent-soft);
+      color: var(--accent)
+    }
+
+    .flagnote {
+      font-size: 13px;
+      color: var(--flag);
+      font-weight: 700
+    }
+
+    .qtext {
+      font-size: 19px;
+      font-weight: 500;
+      margin: 0 0 16px
+    }
+
+    pre.code {
+      background: var(--code-bg);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 12px 14px;
+      font-family: var(--f-mono);
+      font-size: 13.5px;
+      line-height: 1.55;
+      overflow-x: auto;
+      margin: 0 0 18px;
+      white-space: pre
+    }
+
+    pre.code .hl {
+      background: var(--flag-soft);
+      outline: 1px dashed var(--flag);
+      padding: 0 4px
+    }
+
+    .choices {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none
+    }
+
+    .choice {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--fg);
+      border-radius: 5px;
+      padding: 12px 14px;
+      font-family: var(--f-body);
+      font-size: 16px;
+      line-height: 1.5
+    }
+
+    @media (hover:hover) {
+      .choice:hover:not(:disabled) {
+        border-color: var(--accent)
+      }
+    }
+    .choice:active:not(:disabled) {
+      border-color: var(--accent)
+    }
+
+    .choice .k {
+      flex: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1.5px solid var(--muted);
+      display: grid;
+      place-items: center;
+      font-family: var(--f-ui);
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--muted)
+    }
+
+    .choice .t {
+      min-width: 0;
+      padding-top: 2px;
+      overflow-wrap: anywhere
+    }
+
+    .choice.sel {
+      border-color: var(--accent);
+      background: var(--accent-soft)
+    }
+
+    .choice.sel .k {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff
+    }
+
+    .choice.right {
+      border-color: var(--ok);
+      background: var(--ok-soft)
+    }
+
+    .choice.right .k {
+      background: var(--ok);
+      border-color: var(--ok);
+      color: #fff
+    }
+
+    .choice.wrong {
+      border-color: var(--bad);
+      background: var(--bad-soft)
+    }
+
+    .choice.wrong .k {
+      background: var(--bad);
+      border-color: var(--bad);
+      color: #fff
+    }
+
+    .choice:disabled {
+      cursor: default
+    }
+
+    .explain {
+      margin-top: 16px;
+      border-left: 4px solid var(--ok);
+      background: var(--ok-soft);
+      padding: 12px 14px;
+      border-radius: 0 4px 4px 0;
+      font-size: 15px
+    }
+
+    .explain.no {
+      border-color: var(--bad);
+      background: var(--bad-soft)
+    }
+
+    .explain b {
+      display: block;
+      margin-bottom: 2px
+    }
+
+    /* toolbar */
+    .tools {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 5;
+      background: var(--panel);
+      border-top: 1px solid var(--line);
+      padding-bottom: env(safe-area-inset-bottom, 0px)
+    }
+
+    .tools .wrap {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      padding-block: 10px
+    }
+
+    .tools .sp {
+      flex: 1
+    }
+
+    /* review grid */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 14px;
+      color: var(--muted);
+      margin: 12px 0 16px
+    }
+
+    .legend i {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      vertical-align: -2px;
+      margin-right: 6px;
+      border: 1px solid var(--line)
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+      gap: 8px
+    }
+
+    .cell {
+      position: relative;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--fg);
+      border-radius: 4px;
+      padding: 8px 0;
+      font-family: var(--f-mono);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums
+    }
+
+    .cell.ans {
+      background: var(--accent-soft);
+      border-color: var(--accent)
+    }
+
+    .cell.flag::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--flag)
+    }
+
+    .cell.right {
+      background: var(--ok-soft);
+      border-color: var(--ok)
+    }
+
+    .cell.wrong {
+      background: var(--bad-soft);
+      border-color: var(--bad)
+    }
+
+    .confirm {
+      margin-top: 18px;
+      padding: 14px;
+      border: 1px solid var(--bad);
+      border-radius: 6px;
+      background: var(--bad-soft);
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center
+    }
+
+    .confirm p {
+      margin: 0;
+      flex: 1;
+      min-width: 200px
+    }
+
+    /* result */
+    .verdict {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 24px;
+      align-items: center
+    }
+
+    .score {
+      font-family: var(--f-mono);
+      font-size: 56px;
+      font-weight: 600;
+      line-height: 1;
+      font-variant-numeric: tabular-nums
+    }
+
+    .score small {
+      font-size: 18px;
+      color: var(--muted)
+    }
+
+    .stamp {
+      display: inline-block;
+      font-family: var(--f-ui);
+      font-weight: 700;
+      letter-spacing: .18em;
+      padding: 4px 12px;
+      border: 2px solid;
+      border-radius: 3px;
+      font-size: 18px
+    }
+
+    .stamp.pass {
+      color: var(--ok)
+    }
+
+    .stamp.fail {
+      color: var(--bad)
+    }
+
+    .scale {
+      position: relative;
+      height: 10px;
+      background: var(--code-bg);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      margin: 14px 0 4px
+    }
+
+    .scale i {
+      position: absolute;
+      inset: 0 auto 0 0;
+      border-radius: 5px
+    }
+
+    .scale u {
+      position: absolute;
+      top: -5px;
+      bottom: -5px;
+      width: 2px;
+      background: var(--fg)
+    }
+
+    .scalelbl {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--f-mono);
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    .domains {
+      display: grid;
+      gap: 10px;
+      margin-top: 8px
+    }
+
+    .dom {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 90px 56px;
+      gap: 12px;
+      align-items: center;
+      font-size: 15px
+    }
+
+    .dom .b {
+      height: 8px;
+      background: var(--code-bg);
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid var(--line)
+    }
+
+    .dom .b i {
+      display: block;
+      height: 100%
+    }
+
+    .dom .n {
+      font-family: var(--f-mono);
+      font-size: 13px;
+      text-align: right;
+      font-variant-numeric: tabular-nums
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 8px 0 14px
+    }
+
+    .rv {
+      border-top: 1px solid var(--line);
+      padding-block: 18px
+    }
+
+    .rv h3 {
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 10px
+    }
+
+    .rv .num {
+      font-family: var(--f-mono);
+      color: var(--muted);
+      margin-right: 6px
+    }
+
+    .stack {
+      display: grid;
+      gap: 20px
+    }
+
+    .section-title {
+      font-size: 18px;
+      margin-bottom: 4px
+    }
+
+    @media (max-width:640px) {
+      .facts {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .modes {
+        grid-template-columns: 1fr
+      }
+
+      .verdict {
+        grid-template-columns: 1fr;
+        gap: 12px
+      }
+
+      .score {
+        font-size: 44px
+      }
+
+      .panel {
+        padding: 18px
+      }
+
+      .qtext {
+        font-size: 17px
+      }
+
+      .btn kbd {
+        display: none
+      }
+
+      .dom {
+        grid-template-columns: minmax(0, 1fr) 60px 50px
+      }
+    }
+
+
+    /* ===== Mobile / touch ===== */
+    .btn,
+    .cell,
+    .mode,
+    .opts label {
+      min-height: 44px
+    }
+
+    .btn {
+      justify-content: center
+    }
+
+    .ico {
+      font-size: 14px
+    }
+
+    .choice {
+      min-height: 52px;
+      -webkit-user-select: none;
+      user-select: none
+    }
+
+    .choice:active:not(:disabled) .k {
+      border-color: var(--accent)
+    }
+
+    .opts input,
+    .mode input {
+      width: 22px;
+      height: 22px;
+      flex: none
+    }
+
+    .mode input {
+      margin-top: 2px
+    }
+
+    .tools {
+      box-shadow: 0 -2px 8px rgba(0, 0, 0, .06)
+    }
+
+    .swipehint {
+      display: none
+    }
+
+    @media (hover:none) {
+      .swipehint {
+        display: list-item
+      }
+
+      .keyhint {
+        display: none
+      }
+    }
+
+    @media (max-width:640px) {
+      main {
+        padding-block: 14px 96px
+      }
+
+      .bar .wrap {
+        min-height: 46px;
+        gap: 8px;
+        flex-wrap: nowrap
+      }
+
+      .bar .name {
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis
+      }
+
+      .bar .name small {
+        display: none
+      }
+
+      .chip {
+        font-size: 13px;
+        padding: 3px 8px
+      }
+
+      .panel {
+        padding: 16px 14px
+      }
+
+      h1 {
+        font-size: 26px
+      }
+
+      .facts div {
+        padding: 12px
+      }
+
+      .facts b {
+        font-size: 20px
+      }
+
+      .opts {
+        flex-direction: column;
+        gap: 4px
+      }
+
+      .qtext {
+        font-size: 18px;
+        line-height: 1.6
+      }
+
+      pre.code {
+        font-size: 12.5px;
+        padding: 10px;
+        margin-inline: -4px
+      }
+
+      .choices {
+        gap: 8px
+      }
+
+      .choice {
+        padding: 12px;
+        gap: 10px
+      }
+
+      .explain {
+        font-size: 15px
+      }
+
+      /* bottom toolbar: always one row */
+      .tools .wrap {
+        flex-wrap: nowrap;
+        gap: 6px;
+        padding-block: 8px
+      }
+
+      .tools .btn {
+        padding: 9px 12px;
+        flex: none
+      }
+
+      .tools .btn .lbl {
+        display: none
+      }
+
+      .tools #prev,
+      .tools #flag,
+      .tools #rev,
+      .tools #back {
+        min-width: 46px
+      }
+
+      .tools #next,
+      .tools #end {
+        flex: 1;
+        max-width: 220px;
+        margin-left: auto
+      }
+
+      .tools .sp {
+        display: none
+      }
+
+      .tools #back {
+        flex: none
+      }
+
+      .tools #back+.sp+#end {
+        flex: 1
+      }
+
+      .grid {
+        grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+        gap: 6px
+      }
+
+      .confirm .btn {
+        flex: 1
+      }
+
+      .filters .btn {
+        flex: 1;
+        padding-inline: 8px
+      }
+
+      .rv h3 {
+        font-size: 15px
+      }
+
+      .score {
+        font-size: 48px
+      }
+    }
+
+    @media (max-width:360px) {
+      .facts b {
+        font-size: 18px
+      }
+
+      .tools .btn {
+        padding-inline: 9px
+      }
+    }
+
+    /* landscape phones: keep chrome small */
+    @media (max-height:480px) and (orientation:landscape) {
+      .bar .wrap {
+        min-height: 38px
+      }
+
+      main {
+        padding-bottom: 80px
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+      * {
+        transition: none !important
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="bar">
+    <div class="wrap gut">
+      <div class="name"><small>Practice Test Engine</small><span id="barTitle">Arduino Sensor — ຂໍ້ສອບຈຳລອງ</span></div>
+      <span class="chip" id="qCounter" hidden></span>
+      <span class="chip" id="timer" hidden>60:00</span>
+    </div>
+    <div class="progress"><i id="prog" style="width:0"></i></div>
+  </header>
+
+  <main class="gut">
+    <div class="wrap" id="app"></div>
+  </main>
+  <nav class="tools" id="tools" hidden>
+    <div class="wrap gut" id="toolbar"></div>
+  </nav>
+
+  <script>
+    const BANK = [
+      // ---- PIR ----
+      { d: "PIR", q: "PIR ເຊັນເຊີ ຫຍໍ້ມາຈາກຄຳວ່າຫຍັງ?", o: ["Passive Infrared", "Photo Resistor", "Power Relay", "Pulse Receiver"], a: 0, e: "PIR = Passive Infrared = ເຊັນເຊີອິນຟຣາເຣດ ແບບຮັບຢ່າງດຽວ (ບໍ່ສົ່ງຫຍັງອອກ)." },
+      { d: "PIR", q: "PIR ເຊັນເຊີ ກວດຈັບຫຍັງ?", o: ["ແສງສະຫວ່າງ", "ຄື້ນສຽງ", "ຄວາມຮ້ອນຈາກຄົນທີ່ເຄື່ອນໄຫວ", "ຄວາມຊຸ່ມ"], a: 2, e: "ຮ່າງກາຍຄົນປ່ອຍຄວາມຮ້ອນອອກມາ. ເມື່ອຄົນຍ່າງຜ່ານ, PIR ຮູ້ວ່າມີການເຄື່ອນໄຫວ." },
+      { d: "PIR", q: "PIR ເຊັນເຊີ ມີຂາຫຍັງແດ່?", o: ["VCC, Trig, Echo, GND", "VCC, SDA, SCL, GND", "A0, D0", "VCC, OUT, GND"], a: 3, e: "PIR ມີ 3 ຂາ: VCC (ໄຟ 5V), OUT (ສັນຍານ), GND (ດິນ)." },
+      { d: "PIR", q: "ເມື່ອ PIR ກວດພົບຄົນ, ຂາ OUT ໃຫ້ຄ່າຫຍັງ?", o: ["HIGH", "LOW", "0 – 1023", "9600"], a: 0, e: "ພົບຄົນ = HIGH, ບໍ່ພົບ = LOW. ອ່ານຄ່າດ້ວຍ digitalRead()." },
+      // ---- IR ----
+      { d: "IR / Remote", q: "IR ເຊັນເຊີ ໃຊ້ຫຍັງໃນການເຮັດວຽກ?", o: ["ຄື້ນສຽງ", "ແສງອິນຟຣາເຣດ (ຕາເບິ່ງບໍ່ເຫັນ)", "ຄວາມຮ້ອນ", "ແມ່ເຫຼັກ"], a: 1, e: "IR = Infrared = ແສງອິນຟຣາເຣດ. ຕາຄົນເບິ່ງບໍ່ເຫັນ ແຕ່ເຊັນເຊີຮັບໄດ້." },
+      { d: "IR / Remote", q: "IR ເຊັນເຊີ ຮູ້ໄດ້ແນວໃດວ່າມີວັດຖຸຢູ່ຂ້າງໜ້າ?", o: ["ວັດອຸນຫະພູມຂອງວັດຖຸ", "ຟັງສຽງຂອງວັດຖຸ", "ວັດນ້ຳໜັກຂອງວັດຖຸ", "ສົ່ງແສງ IR ອອກໄປ ແລ້ວຮັບແສງທີ່ສະທ້ອນກັບມາ"], a: 3, e: "ຕົວສົ່ງ (IR LED) ສົ່ງແສງ → ແສງຕຳວັດຖຸ → ສະທ້ອນກັບ → ຕົວຮັບ (Photodiode) ຮັບໄດ້ = ມີວັດຖຸ." },
+      { d: "IR / Remote", q: "ຕົວຮັບ IR (ທີ່ໃຊ້ກັບ remote) ມີຂາຫຍັງແດ່?", o: ["Trig, Echo", "SDA, SCL", "OUT, GND, VCC", "A0, A1"], a: 2, e: "3 ຂາ: OUT → ຂາ Arduino (ເຊັ່ນ ຂາ 11), GND, VCC (5V)." },
+      { d: "IR / Remote", q: "ກົດປຸ່ມ remote ແຕ່ລະປຸ່ມ, remote ສົ່ງຫຍັງມາ?", o: ["ຄຳວ່າ \"ON\"", "ລະຫັດຕົວເລກ (HEX) ທີ່ບໍ່ຊ້ຳກັນ", "ໄຟ 5V", "ຄື້ນສຽງ"], a: 1, e: "ແຕ່ລະປຸ່ມມີລະຫັດຂອງມັນເອງ ເຊັ່ນ 0xFFA25D. ຕ້ອງອ່ານລະຫັດທາງ Serial Monitor ກ່ອນ." },
+      { d: "IR / Remote", q: "ໃຊ້ remote ກັບ Arduino ຕ້ອງໃຊ້ library ຫຍັງ?", o: ["DHT.h", "Servo.h", "LiquidCrystal_I2C.h", "IRremote.h"], a: 3, e: "ຂຽນ #include <IRremote.h> ຢູ່ແຖວທຳອິດຂອງໂຄດ." },
+      // ---- Temp/Humidity ----
+      { d: "ອຸນຫະພູມ / ຄວາມຊຸ່ມ", q: "DHT11 ວັດຫຍັງໄດ້ແດ່?", o: ["ອຸນຫະພູມ ແລະ ຄວາມຊຸ່ມ", "ແສງສະຫວ່າງ", "ໄລຍະທາງ", "ການເຄື່ອນໄຫວ"], a: 0, e: "DHT11 ວັດອຸນຫະພູມ (°C) ແລະ ຄວາມຊຸ່ມ (%). ມີ 3 ຂາ: VCC, DATA, GND." },
+      { d: "ອຸນຫະພູມ / ຄວາມຊຸ່ມ", q: "ເຊັນເຊີອຸນຫະພູມ-ຄວາມຊຸ່ມ (DHT11) ເຮັດວຽກແນວໃດ?", o: ["ສົ່ງຄື້ນສຽງອອກໄປ", "ມີຕົວວັດຄວາມຊຸ່ມ ແລະ ຕົວວັດອຸນຫະພູມຢູ່ພາຍໃນ", "ສົ່ງແສງ IR ອອກໄປ", "ກວດຈັບຄົນຍ່າງຜ່ານ"], a: 1, e: "ຕົວວັດຄວາມຊຸ່ມ ປ່ຽນຄ່າຕາມຄວາມຊຸ່ມ; ຕົວວັດອຸນຫະພູມ (Thermistor) ປ່ຽນຄ່າຕາມຄວາມຮ້ອນ. ຊິບພາຍໃນແປງເປັນຕົວເລກ ແລ້ວສົ່ງມາທາງຂາ DATA." },
+      { d: "ອຸນຫະພູມ / ຄວາມຊຸ່ມ", q: "ໃຊ້ DHT11 ຕ້ອງໃຊ້ library ບໍ່?", o: ["ບໍ່ຕ້ອງໃຊ້", "ຕ້ອງໃຊ້ Servo.h", "ຕ້ອງໃຊ້ DHT.h", "ຕ້ອງໃຊ້ IRremote.h"], a: 2, e: "DHT11 ສົ່ງຂໍ້ມູນແບບ digital ທີ່ອ່ານຍາກ, library DHT.h ຊ່ວຍອ່ານໃຫ້ງ່າຍ." },
+      { d: "ອຸນຫະພູມ / ຄວາມຊຸ່ມ", q: "ເປັນຫຍັງ TMP36 (ໃນໂຄດຂອງອາຈານ) ບໍ່ຕ້ອງໃຊ້ library?", o: ["ເພາະບໍ່ມີ library", "ເພາະໃຊ້ໄຟ 3.3V", "ເພາະມັນບໍ່ໄດ້ວັດອຸນຫະພູມ", "ເພາະເປັນ analog, ໃຊ້ analogRead() + ສູດ ໄດ້ເລີຍ"], a: 3, e: "ສູດຂອງອາຈານ: t = (analogRead(A0) * 5.0 / 1024 - 0.5) * 100" },
+      // ---- LDR ----
+      { d: "Photoresistor", q: "Photoresistor (LDR): ເມື່ອແສງຫຼາຍ, ຄວາມຕ້ານທານເປັນແນວໃດ?", o: ["ເພີ່ມຂຶ້ນ", "ຫຼຸດລົງ", "ບໍ່ປ່ຽນ", "ເປັນ 0 ສະເໝີ"], a: 1, e: "ແສງຫຼາຍ = ຄວາມຕ້ານທານໜ້ອຍ; ມືດ = ຄວາມຕ້ານທານຫຼາຍ. ອ່ານຄ່າດ້ວຍ analogRead()." },
+      { d: "Photoresistor", q: "LDR ມີຄ່າຕ່ຳສຸດ 344, ສູງສຸດ 1017. ຄ່າກາງ (threshold) ແມ່ນປະມານເທົ່າໃດ?", o: ["344", "1017", "680", "100"], a: 2, e: "(344 + 1017) ÷ 2 ≈ 680. ຖ້າໜ້ອຍກວ່າ 680 = ມືດ → ເປີດໄຟ." },
+      // ---- Ultrasonic ----
+      { d: "Ultrasonic", q: "Ultrasonic ເຊັນເຊີ ໃຊ້ເຮັດຫຍັງ?", o: ["ວັດໄລຍະທາງ", "ວັດອຸນຫະພູມ", "ວັດແສງ", "ຮັບສັນຍານ remote"], a: 0, e: "ໃຊ້ຄື້ນສຽງສູງ 40 kHz (ຫູຄົນບໍ່ໄດ້ຍິນ). ວັດໄດ້ປະມານ 2 – 400 cm." },
+      { d: "Ultrasonic", q: "Ultrasonic ວັດໄລຍະທາງແນວໃດ?", o: ["ວັດຄວາມຮ້ອນຂອງວັດຖຸ", "ອ່ານລະຫັດ HEX", "ວັດຄວາມຕ້ານທານ", "ສົ່ງສຽງອອກໄປ ແລ້ວຈັບເວລາທີ່ສຽງສະທ້ອນກັບມາ"], a: 3, e: "ຂາ Trig ສົ່ງສຽງ → ສຽງຕຳວັດຖຸ → ຂາ Echo ຮັບສຽງກັບ. ສູດ: distance = duration × 0.0343 ÷ 2" },
+      { d: "Ultrasonic", q: "Ultrasonic HC-SR04 ມີຂາຫຍັງແດ່?", o: ["VCC, OUT, GND", "VCC, DATA, GND", "VCC, Trig, Echo, GND", "SDA, SCL"], a: 2, e: "4 ຂາ: VCC (5V), Trig (ສົ່ງ), Echo (ຮັບ), GND." },
+      { d: "Ultrasonic", q: "ໂຄດ ultrasonic ຕ້ອງປະກາດຕົວປ່ຽນຫຍັງແດ່?", o: ["light, threshold", "trigPin, echoPin, duration, distance", "h, t", "results, code"], a: 1, e: "const int trigPin = 7; const int echoPin = 6; long duration; float distance;" },
+      { d: "Ultrasonic", q: "ເປັນຫຍັງສູດໄລຍະທາງຕ້ອງຫານ 2?", o: ["ເພາະສຽງເດີນທາງໄປ ແລະ ກັບ", "ເພາະມີ LED 2 ດອກ", "ເພາະເຊັນເຊີມີ 2 ຕາ", "ເພາະໃຊ້ໄຟ 2V"], a: 0, e: "ເວລາທີ່ວັດໄດ້ແມ່ນເວລາ ໄປ + ກັບ, ຈຶ່ງຕ້ອງຫານ 2 ເພື່ອໃຫ້ໄດ້ໄລຍະທາງຖ້ຽວດຽວ." },
+      // ---- Arduino basics (Part 3) ----
+      { d: "ພື້ນຖານ Arduino", q: "Serial.begin(9600); ເຮັດຫຍັງ?", o: ["ລໍຖ້າ 9600 ms", "ເປີດຂາ 9600", "ເລີ່ມສົ່ງຂໍ້ມູນໄປ Serial Monitor", "ອ່ານຄ່າ analog"], a: 2, e: "ຕ້ອງຂຽນໃນ setup() ກ່ອນໃຊ້ Serial.print()." },
+      { d: "ພື້ນຖານ Arduino", q: "Serial.print() ກັບ Serial.println() ຕ່າງກັນແນວໃດ?", o: ["println() ຂຶ້ນແຖວໃໝ່", "ບໍ່ຕ່າງກັນ", "print() ຂຶ້ນແຖວໃໝ່", "println() ໃຊ້ກັບຕົວເລກເທົ່ານັ້ນ"], a: 0, e: "ln = line (ແຖວ). println() ສະແດງຜົນແລ້ວຂຶ້ນແຖວໃໝ່." },
+      { d: "ພື້ນຖານ Arduino", q: "analogRead() ໃຫ້ຄ່າໃນຊ່ວງໃດ?", o: ["0 – 255", "0 – 5", "0 – 100", "0 – 1023"], a: 3, e: "Arduino Uno ອ່ານຄ່າ analog ໄດ້ 0 ຫາ 1023." },
+      { d: "ພື້ນຖານ Arduino", q: "analogWrite() ໃຊ້ຄ່າໃນຊ່ວງໃດ?", o: ["0 – 1023", "0 – 255", "0 – 1", "0 – 9600"], a: 1, e: "ໃຊ້ໄດ້ສະເພາະຂາທີ່ມີເຄື່ອງໝາຍ ~ (3, 5, 6, 9, 10, 11)." },
+      { d: "ພື້ນຖານ Arduino", q: "delay(1000); ລໍຖ້າດົນປານໃດ?", o: ["1 ms", "10 ວິນາທີ", "1 ວິນາທີ", "1000 ວິນາທີ"], a: 2, e: "delay() ນັບເປັນ ms. 1000 ms = 1 ວິນາທີ." },
+      { d: "ພື້ນຖານ Arduino", q: "map(light, 344, 1017, 0, 100) ເຮັດຫຍັງ?", o: ["ແປງຄ່າໃຫ້ເປັນ 0 – 100 %", "ປ່ຽນຂາ", "ຄູນດ້ວຍ 100", "ລໍຖ້າ 100 ms"], a: 0, e: "344 → 0%, 1017 → 100%." },
+      { d: "ພື້ນຖານ Arduino", q: "digitalWrite(LED, isDark ? HIGH : LOW); ໝາຍຄວາມວ່າແນວໃດ?", o: ["ເຮັດຊ້ຳ (loop)", "ເປັນ comment", "ເປັນການຫານ", "ຖ້າມືດ = HIGH (ເປີດ), ຖ້າບໍ່ມືດ = LOW (ປິດ)"], a: 3, e: "? : ຄືກັບ if-else ແບບສັ້ນ. ອາຈານໃຊ້ແບບນີ້ຫຼາຍ." },
+      { d: "Ultrasonic", q: "ຖ້າ duration = 1166 µs, ໄລຍະທາງແມ່ນປະມານເທົ່າໃດ?", o: ["10 cm", "20 cm", "40 cm", "5 cm"], a: 1, e: "1166 × 0.0343 ÷ 2 ≈ 20 cm." },
+      { d: "Ultrasonic", q: "ໂຄດ ultrasonic ຂອງອາຈານ: ຖ້າ distance ≤ 10 cm, ໄຟສີຫຍັງຕິດ?", o: ["ຂຽວ", "ຟ້າ", "ແດງ", "ບໍ່ມີໄຟຕິດ"], a: 2, e: "≤ 10 cm → ແດງ; ≤ 20 cm → ຟ້າ; ໄກກວ່າ 20 cm → ຂຽວ." },
+      { d: "ພື້ນຖານ Arduino", q: "tone(6, 1000, 300); ເຮັດຫຍັງ?", o: ["Buzzer ຂາ 6 ດັງ 1000 Hz ດົນ 300 ms", "ເປີດ LED ຂາ 6", "ລໍຖ້າ 300 ວິນາທີ", "ອ່ານຄ່າ 1000 ຄັ້ງ"], a: 0, e: "ໃຊ້ noTone(6) ເພື່ອປິດສຽງ." },
+      { d: "ພື້ນຖານ Arduino", q: "ຈໍ LCD I2C ຕໍ່ກັບ Arduino ດ້ວຍຂາຫຍັງ?", o: ["Trig, Echo", "OUT", "A0", "SDA, SCL"], a: 3, e: "SDA → A4, SCL → A5, ບວກກັບ VCC ແລະ GND." },
+      { d: "ພື້ນຖານ Arduino", q: "ເປັນຫຍັງຕ້ອງໃສ່ resistor ກັບ LED?", o: ["ເພື່ອເພີ່ມໄຟ", "ເພື່ອກັນ LED ເສຍ (ຈຳກັດກະແສໄຟ)", "ເພື່ອໃຫ້ LED ແຈ້ງຂຶ້ນ", "ບໍ່ຈຳເປັນ"], a: 1, e: "ນິຍົມໃຊ້ 220Ω ຫຼື 330Ω." }
+    ];
+    const DOMAINS = ["PIR", "IR / Remote", "ອຸນຫະພູມ / ຄວາມຊຸ່ມ", "Photoresistor", "Ultrasonic", "ພື້ນຖານ Arduino"];
+    const LETTERS = ["a", "b", "c", "d"];
+    const MINUTES = 60, PASS = 675;
+    const KEY = "arduino-exam-v2";
+
+    let S = null;          // session state
+    let view = "start";    // start | q | review | result
+    let confirmEnd = false, rvFilter = "all", tick = null;
+
+    const $ = s => document.querySelector(s);
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[a[i], a[j]] = [a[j], a[i]]; } return a; };
+    const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { } };
+    const load = () => { try { return JSON.parse(localStorage.getItem(KEY)); } catch (e) { return null; } };
+    const clearSaved = () => { try { localStorage.removeItem(KEY); } catch (e) { } };
+
+    function newSession(mode, shQ, shO, ids) {
+      let order = ids || BANK.map((_, i) => i);
+      if (shQ) order = shuffle(order);
+      S = {
+        mode, order, i: 0, done: false,
+        perm: order.map(() => shO ? shuffle([0, 1, 2, 3]) : [0, 1, 2, 3]),
+        ans: order.map(() => null), flag: order.map(() => false),
+        start: Date.now(), limit: Math.max(10, Math.round(MINUTES * order.length / BANK.length)) * 60000, end: null
+      };
+      save();
+    }
+
+    const q = k => BANK[S.order[k]];
+    const isRight = k => S.ans[k] !== null && S.perm[k][S.ans[k]] === q(k).a;
+    const answered = () => S.ans.filter(a => a !== null).length;
+    const remaining = () => S.limit - (Date.now() - S.start);
+    const fmt = ms => { ms = Math.max(0, ms); const m = Math.floor(ms / 60000), s = Math.floor(ms % 60000 / 1000); return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0"); };
+
+    function renderCode(c) {
+      return '<pre class="code">' + esc(c).replace(/\[(_+)\]/g, '<span class="hl">$1</span>') + '</pre>';
+    }
+
+    function chrome() {
+      const live = S && !S.done && view !== "start";
+      $("#qCounter").hidden = !live; $("#timer").hidden = !(live && S.mode === "exam");
+      $("#tools").hidden = !(live);
+      if (live) {
+        $("#qCounter").textContent = "ຂໍ້ " + (S.i + 1) + " / " + S.order.length;
+        $("#prog").style.width = (answered() / S.order.length * 100) + "%";
+      } else $("#prog").style.width = (S && S.done ? 100 : 0) + "%";
+      fitMain();
+    }
+
+    /* keep the last content clear of the fixed bottom toolbar */
+    function fitMain() {
+      const t = $("#tools");
+      $("main").style.paddingBottom = t.hidden ? "" : (t.offsetHeight + 16) + "px";
+    }
+    addEventListener("resize", fitMain);
+    addEventListener("orientationchange", fitMain);
+
+    /* swipe left/right to change question (ignored on code blocks, which scroll sideways) */
+    let tx = 0, ty = 0, tt = 0, tok = false;
+    document.addEventListener("touchstart", e => {
+      tok = view === "q" && e.touches.length === 1 && !e.target.closest("pre.code");
+      if (tok) { tx = e.touches[0].clientX; ty = e.touches[0].clientY; tt = Date.now(); }
+    }, { passive: true });
+    document.addEventListener("touchend", e => {
+      if (!tok) return; tok = false;
+      const t = e.changedTouches[0], dx = t.clientX - tx, dy = t.clientY - ty;
+      if (Date.now() - tt > 600 || Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.8) return;
+      if (dx < 0) { if (S.i < S.order.length - 1) move(1); } else move(-1);
+    }, { passive: true });
+
+    /* phone woke up / tab came back: refresh the countdown at once */
+    document.addEventListener("visibilitychange", () => { if (!document.hidden && S && !S.done && S.mode === "exam" && view !== "start") startTimer(); });
+
+    function startTimer() {
+      clearInterval(tick);
+      if (!S || S.done || S.mode !== "exam") return;
+      const t = () => {
+        const r = remaining();
+        $("#timer").textContent = "⏱ " + fmt(r);
+        $("#timer").classList.toggle("warn", r < 5 * 60000);
+        if (r <= 0) { finish(); }
+      };
+      t(); tick = setInterval(t, 1000);
+    }
+
+    /* ---------- views ---------- */
+    function vStart() {
+      const prev = load();
+      const canResume = prev && !prev.done && (prev.mode === "practice" || prev.limit - (Date.now() - prev.start) > 0);
+      $("#app").innerHTML = `
+  <div class="start">
+    <div class="panel stack">
+      <div>
+        <div class="eyebrow">ຂໍ້ສອບຈຳລອງ · ແບບ A+ Test Engine</div>
+        <h1>Arduino Sensor</h1>
+        <p style="margin:6px 0 0;color:var(--muted)">PIR · IR / Remote · DHT11 / TMP36 · Photoresistor · Ultrasonic · ພື້ນຖານ Arduino</p>
+      </div>
+      <div class="facts">
+        <div><b>${BANK.length}</b><span>ຂໍ້ (ເລືອກຕອບ)</span></div>
+        <div><b>${MINUTES}</b><span>ນາທີ</span></div>
+        <div><b>${PASS}</b><span>ຄະແນນຜ່ານ</span></div>
+        <div><b>100–900</b><span>ຊ່ວງຄະແນນ</span></div>
+      </div>
+      ${canResume ? `<div class="resume"><span style="flex:1;min-width:200px">ມີການສອບທີ່ຍັງບໍ່ແລ້ວ: ຕອບແລ້ວ ${prev.ans.filter(a => a !== null).length} / ${prev.order.length} ຂໍ້</span><button class="btn primary" id="resume">ສອບຕໍ່</button></div>` : ""}
+      <div>
+        <div class="eyebrow" style="margin-bottom:8px">ເລືອກໂໝດ</div>
+        <div class="modes">
+          <label class="mode"><input type="radio" name="mode" id="m-exam" value="exam" checked><div><b>ໂໝດສອບຈິງ (Exam)</b><span>ຈັບເວລາ ${MINUTES} ນາທີ. ບໍ່ບອກຄຳຕອບຈົນກວ່າຈະສົ່ງ. ໄດ້ໃບລາຍງານຄະແນນແຍກຕາມໝວດ.</span></div></label>
+          <label class="mode"><input type="radio" name="mode" id="m-prac" value="practice"><div><b>ໂໝດຝຶກ (Practice)</b><span>ບໍ່ຈັບເວລາ. ເລືອກແລ້ວບອກຖືກ/ຜິດ ພ້ອມເຫດຜົນທັນທີ.</span></div></label>
+        </div>
+      </div>
+      <div class="opts">
+        <label><input type="checkbox" id="shq" checked> ສະລັບລຳດັບຂໍ້</label>
+        <label><input type="checkbox" id="sho" checked> ສະລັບຕົວເລືອກ a–d</label>
+      </div>
+      <ul class="rules">
+        <li class="swipehint">ແຕະຕົວເລືອກເພື່ອຕອບ, <b>ປັດຊ້າຍ / ຂວາ</b> ເພື່ອໄປຂໍ້ຕໍ່ໄປ / ກ່ອນໜ້າ, ແຕະ <b>○</b> ເພື່ອໝາຍໄວ້ທົບທວນ.</li>
+        <li class="keyhint">ກົດ <b>1–4</b> ຫຼື <b>a–d</b> ເພື່ອເລືອກຄຳຕອບ, <b>←</b> <b>→</b> ເພື່ອໄປຂໍ້ກ່ອນ/ຕໍ່ໄປ, <b>M</b> ເພື່ອໝາຍໄວ້ທົບທວນ.</li>
+        <li>ກົດ "ທົບທວນ" ເພື່ອເບິ່ງຂໍ້ທີ່ຍັງບໍ່ຕອບ ຫຼື ໝາຍໄວ້ ກ່ອນສົ່ງ.</li>
+        <li>ເນື້ອຫາມາຈາກ ຄູ່ມືກຽມສອບ Arduino Sensor (Arduino.pdf) ພາກ 1 ແລະ 3.1.</li>
+      </ul>
+      <div><button class="btn primary" id="go">ເລີ່ມສອບ →</button></div>
+    </div>
+  </div>`;
+      $("#go").onclick = () => {
+        newSession(document.querySelector('input[name=mode]:checked').value, $("#shq").checked, $("#sho").checked);
+        go("q");
+      };
+      if (canResume) $("#resume").onclick = () => { S = prev; go(S.done ? "result" : "q"); };
+    }
+
+    function vQuestion() {
+      const k = S.i, item = q(k), perm = S.perm[k], chosen = S.ans[k];
+      const locked = S.mode === "practice" && chosen !== null;
+      const choices = perm.map((orig, pos) => {
+        let cls = "";
+        if (locked) { if (orig === item.a) cls = "right"; else if (pos === chosen) cls = "wrong"; }
+        else if (pos === chosen) cls = "sel";
+        return `<li><button class="choice ${cls}" data-pos="${pos}" ${locked ? "disabled" : ""} aria-pressed="${pos === chosen}"><span class="k">${LETTERS[pos]}</span><span class="t">${esc(item.o[orig])}</span></button></li>`;
+      }).join("");
+      let fb = "";
+      if (locked) {
+        const ok = perm[chosen] === item.a;
+        fb = `<div class="explain ${ok ? "" : "no"}"><b>${ok ? "✓ ຖືກຕ້ອງ" : "✗ ບໍ່ຖືກ — ຄຳຕອບແມ່ນ " + LETTERS[perm.indexOf(item.a)]}</b>${esc(item.e)}</div>`;
+      }
+      $("#app").innerHTML = `
+  <div class="panel">
+    <div class="qhead"><span class="tag">${esc(item.d)}</span>${S.flag[k] ? '<span class="flagnote">● ໝາຍໄວ້ທົບທວນ</span>' : ""}</div>
+    <p class="qtext"><span style="color:var(--muted);font-family:var(--f-mono);font-size:15px">${k + 1}.</span> ${esc(item.q)}</p>
+    ${item.c ? renderCode(item.c) : ""}
+    <ul class="choices">${choices}</ul>
+    ${fb}
+  </div>`;
+      document.querySelectorAll(".choice").forEach(b => b.onclick = () => pick(+b.dataset.pos));
+      const last = k === S.order.length - 1;
+      $("#toolbar").innerHTML = `
+    <button class="btn" id="prev" aria-label="ຂໍ້ກ່ອນໜ້າ" ${k === 0 ? "disabled" : ""}>←<span class="lbl"> ກ່ອນໜ້າ</span></button>
+    <button class="btn ${S.flag[k] ? "flagged" : ""}" id="flag" aria-label="ໝາຍໄວ້ທົບທວນ"><span>${S.flag[k] ? "●" : "○"}</span><span class="lbl"> ${S.flag[k] ? "ຍົກເລີກໝາຍ" : "ໝາຍໄວ້"}</span> <kbd>M</kbd></button>
+    <span class="sp"></span>
+    <button class="btn" id="rev"><span class="ico">▦</span><span class="lbl"> ທົບທວນ</span></button>
+    <button class="btn primary" id="next">${last ? "ສົ່ງ" : "ຕໍ່ໄປ →"}</button>`;
+      $("#prev").onclick = () => move(-1);
+      $("#next").onclick = () => last ? go("review") : move(1);
+      $("#flag").onclick = toggleFlag;
+      $("#rev").onclick = () => go("review");
+    }
+
+    function vReview() {
+      const n = S.order.length, un = n - answered(), fl = S.flag.filter(Boolean).length;
+      const cells = S.order.map((_, k) => {
+        let c = S.ans[k] !== null ? "ans" : "";
+        if (S.mode === "practice" && S.ans[k] !== null) c = isRight(k) ? "right" : "wrong";
+        return `<button class="cell ${c} ${S.flag[k] ? "flag" : ""}" data-k="${k}" aria-label="ຂໍ້ ${k + 1}">${k + 1}</button>`;
+      }).join("");
+      $("#app").innerHTML = `
+  <div class="panel">
+    <div class="eyebrow">ໜ້າທົບທວນ</div>
+    <h2 class="section-title">ຕອບແລ້ວ ${answered()} / ${n} ຂໍ້</h2>
+    <div class="legend">
+      <span><i style="background:var(--accent-soft);border-color:var(--accent)"></i>ຕອບແລ້ວ</span>
+      <span><i></i>ຍັງບໍ່ຕອບ (${un})</span>
+      <span><i style="background:var(--flag);border-color:var(--flag);border-radius:50%"></i>ໝາຍໄວ້ (${fl})</span>
+    </div>
+    <div class="grid">${cells}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px">
+      <button class="btn" id="goFlag" ${fl ? "" : "disabled"}>ໄປຂໍ້ທີ່ໝາຍໄວ້</button>
+      <button class="btn" id="goUn" ${un ? "" : "disabled"}>ໄປຂໍ້ທີ່ຍັງບໍ່ຕອບ</button>
+    </div>
+    ${confirmEnd ? `<div class="confirm"><p>${un ? `ຍັງມີ <b>${un}</b> ຂໍ້ທີ່ບໍ່ໄດ້ຕອບ (ນັບເປັນຜິດ). ` : ""}ສົ່ງຂໍ້ສອບແລ້ວຈະແກ້ໄຂບໍ່ໄດ້. ຢືນຢັນບໍ?</p><button class="btn" id="cancelEnd">ຍົກເລີກ</button><button class="btn primary" id="doEnd">ຢືນຢັນ ສົ່ງຂໍ້ສອບ</button></div>` : ""}
+  </div>`;
+      document.querySelectorAll(".cell").forEach(b => b.onclick = () => { S.i = +b.dataset.k; confirmEnd = false; go("q"); });
+      $("#goFlag").onclick = () => { S.i = S.flag.findIndex(Boolean); go("q"); };
+      $("#goUn").onclick = () => { S.i = S.ans.findIndex(a => a === null); go("q"); };
+      if (confirmEnd) { $("#cancelEnd").onclick = () => { confirmEnd = false; vReview(); }; $("#doEnd").onclick = finish; }
+      $("#toolbar").innerHTML = `
+    <button class="btn" id="back">← ຂໍ້ ${S.i + 1}</button>
+    <span class="sp"></span>
+    <button class="btn danger" id="end">ສົ່ງຂໍ້ສອບ</button>`;
+      $("#back").onclick = () => { confirmEnd = false; go("q"); };
+      $("#end").onclick = () => { confirmEnd = true; vReview(); $(".confirm").scrollIntoView({ block: "nearest" }); };
+    }
+
+    function vResult() {
+      const n = S.order.length;
+      const right = S.order.filter((_, k) => isRight(k)).length;
+      const pct = right / n, scaled = Math.round(100 + 800 * pct), pass = scaled >= PASS;
+      const used = (S.end || Date.now()) - S.start;
+      const dom = DOMAINS.map(d => {
+        const ks = S.order.map((_, k) => k).filter(k => q(k).d === d);
+        return { d, t: ks.length, r: ks.filter(isRight).length };
+      }).filter(x => x.t);
+      const wrongIds = S.order.filter((_, k) => !isRight(k));
+      const list = S.order.map((_, k) => k).filter(k => rvFilter === "all" || !isRight(k)).map(k => {
+        const item = q(k), perm = S.perm[k], ch = S.ans[k];
+        const opts = perm.map((orig, pos) => {
+          let cls = orig === item.a ? "right" : (pos === ch ? "wrong" : "");
+          return `<li><div class="choice ${cls}"><span class="k">${LETTERS[pos]}</span><span class="t">${esc(item.o[orig])}</span></div></li>`;
+        }).join("");
+        const ok = isRight(k);
+        return `<div class="rv"><h3><span class="num">${k + 1}.</span>${esc(item.q)} <span class="tag" style="margin-left:6px">${esc(item.d)}</span></h3>
+      ${item.c ? renderCode(item.c) : ""}<ul class="choices">${opts}</ul>
+      <div class="explain ${ok ? "" : "no"}"><b>${ch === null ? "— ບໍ່ໄດ້ຕອບ" : ok ? "✓ ຖືກຕ້ອງ" : "✗ ທ່ານຕອບ " + LETTERS[ch]}</b>${esc(item.e)}</div></div>`;
+      }).join("") || `<p style="color:var(--muted)">ບໍ່ມີຂໍ້ຜິດ. ເກັ່ງຫຼາຍ!</p>`;
+      const color = pass ? "var(--ok)" : "var(--bad)";
+      const markPos = (PASS - 100) / 800 * 100;
+      $("#app").innerHTML = `
+  <div class="stack">
+    <div class="panel">
+      <div class="eyebrow">ໃບລາຍງານຄະແນນ · ${S.mode === "exam" ? "ໂໝດສອບຈິງ" : "ໂໝດຝຶກ"}</div>
+      <div class="verdict" style="margin-top:10px">
+        <div class="score" style="color:${color}">${scaled}<small> / 900</small></div>
+        <div>
+          <span class="stamp ${pass ? "pass" : "fail"}">${pass ? "PASS · ຜ່ານ" : "FAIL · ບໍ່ຜ່ານ"}</span>
+          <p style="margin:8px 0 0">ຖືກ <b>${right}</b> ຈາກ ${n} ຂໍ້ (${Math.round(pct * 100)}%) · ໃຊ້ເວລາ ${fmt(used)} · ຄະແນນຜ່ານ ${PASS}</p>
+        </div>
+      </div>
+      <div class="scale"><i style="width:${(scaled - 100) / 8}%;background:${color}"></i><u style="left:${markPos}%"></u></div>
+      <div class="scalelbl"><span>100</span><span>ຜ່ານ ${PASS}</span><span>900</span></div>
+    </div>
+    <div class="panel">
+      <h2 class="section-title">ຜົນແຍກຕາມໝວດ</h2>
+      <div class="domains">${dom.map(x => {
+        const p = x.r / x.t, c = p >= .8 ? "var(--ok)" : p >= .6 ? "var(--flag)" : "var(--bad)";
+        return `<div class="dom"><span>${esc(x.d)}</span><span class="b"><i style="width:${p * 100}%;background:${c}"></i></span><span class="n">${x.r}/${x.t}</span></div>`;
+      }).join("")}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:20px">
+        <button class="btn primary" id="again">ສອບໃໝ່</button>
+        <button class="btn" id="retryWrong" ${wrongIds.length ? "" : "disabled"}>ສອບສະເພາະ ${wrongIds.length} ຂໍ້ທີ່ຜິດ</button>
+        <button class="btn" id="home">ໜ້າຫຼັກ</button>
+      </div>
+    </div>
+    <div class="panel">
+      <h2 class="section-title">ທົບທວນຄຳຕອບ</h2>
+      <div class="filters">
+        <button class="btn ${rvFilter === "wrong" ? "primary" : ""}" id="fWrong">ສະເພາະຂໍ້ຜິດ (${wrongIds.length})</button>
+        <button class="btn ${rvFilter === "all" ? "primary" : ""}" id="fAll">ທັງໝົດ (${n})</button>
+      </div>
+      ${list}
+    </div>
+  </div>`;
+      $("#again").onclick = () => { newSession(S.mode, true, true); go("q"); };
+      $("#retryWrong").onclick = () => { newSession(S.mode, true, true, wrongIds); go("q"); };
+      $("#home").onclick = () => go("start");
+      $("#fWrong").onclick = () => { rvFilter = "wrong"; vResult(); };
+      $("#fAll").onclick = () => { rvFilter = "all"; vResult(); };
+    }
+
+    /* ---------- actions ---------- */
+    function go(v) {
+      view = v; confirmEnd = v === "review" ? confirmEnd : false;
+      ({ start: vStart, q: vQuestion, review: vReview, result: vResult })[v]();
+      chrome(); startTimer(); window.scrollTo(0, 0);
+    }
+    function pick(pos) {
+      if (S.mode === "practice" && S.ans[S.i] !== null) return;
+      S.ans[S.i] = pos; save(); vQuestion(); chrome();
+      if (S.mode === "practice") { const ex = $(".explain"); if (ex) ex.scrollIntoView({ block: "nearest", behavior: "smooth" }); }
+    }
+    function move(d) { const n = S.i + d; if (n < 0 || n >= S.order.length) return; S.i = n; save(); go("q"); }
+    function toggleFlag() { S.flag[S.i] = !S.flag[S.i]; save(); vQuestion(); }
+    function finish() { clearInterval(tick); S.done = true; S.end = Date.now(); rvFilter = "wrong"; save(); go("result"); }
+
+    document.addEventListener("keydown", e => {
+      if (view !== "q" || e.ctrlKey || e.metaKey || e.altKey) return;
+      const k = e.key.toLowerCase();
+      const idx = "1234".indexOf(k) >= 0 ? "1234".indexOf(k) : "abcd".indexOf(k);
+      if (idx >= 0 && k.length === 1) { pick(idx); e.preventDefault(); }
+      else if (e.key === "ArrowRight") move(1);
+      else if (e.key === "ArrowLeft") move(-1);
+      else if (k === "m") toggleFlag();
+    });
+
+    go("start");
+  </script>
+
+</body>
+
+</html>
